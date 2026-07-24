@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>成功大學榕園 - 百年淬鍊，綠蔭蒼蒼</title>
+
+    <!-- PWA: Web App Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2b8358">
+    <meta name="description" content="國立成功大學榕園介紹網站：歷史沿革、特色亮點與旅遊資訊，百年淬鍊，綠蔭蒼蒼。">
+
+    <!-- PWA: iOS 支援 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="成大榕園">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+    <!-- PWA: Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+    <link rel="shortcut icon" href="icons/favicon.ico">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JQEE2PLNR8"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-JQEE2PLNR8');
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2fbf5',
+                            100: '#e1f6e8',
+                            200: '#c3ecd4',
+                            300: '#94dbb3',
+                            400: '#5fc18e',
+                            500: '#3ba470',
+                            600: '#2b8358',
+                            700: '#246948',
+                            800: '#1f533a',
+                            900: '#1a4431',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f8fafc;
+            /* 平滑捲動 */
+            scroll-behavior: smooth; 
+        }
+        .fade-enter-active,
+        .fade-leave-active {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .fade-enter-from,
+        .fade-leave-to {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        .hero-bg {
+            /* 使用大樹與草地的意象圖片作為背景 */
+            background-image: linear-gradient(rgba(15, 30, 20, 0.6), rgba(15, 30, 20, 0.4)), url('https://images.unsplash.com/photo-1542282811-943ef1a6470b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased selection:bg-brand-300 selection:text-brand-900">
+
+    <div id="app" class="min-h-screen flex flex-col">
+        
+        <header class="hero-bg text-white h-[60vh] min-h-[400px] flex items-center justify-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-t from-brand-900/80 to-transparent"></div>
+            <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+                <span class="inline-block py-1 px-3 rounded-full bg-brand-500/80 text-brand-50 text-sm font-medium tracking-wider mb-4 backdrop-blur-sm border border-brand-400/50">
+                    NCKU Banyan Garden
+                </span>
+                <h1 class="text-5xl md:text-7xl font-black mb-6 tracking-tight drop-shadow-lg">
+                    成功大學<span class="text-brand-300">榕園</span>
+                </h1>
+                <p class="text-lg md:text-2xl font-light text-gray-200 drop-shadow-md max-w-2xl mx-auto leading-relaxed">
+                    百年淬鍊，綠蔭蒼蒼。見證世紀交替的臺南府城綠寶石。
+                </p>
+                <a href="#explore" class="mt-10 inline-flex items-center justify-center gap-2 bg-brand-500 hover:bg-brand-400 text-white px-8 py-3 rounded-full font-medium transition-all duration-300 shadow-[0_0_20px_rgba(59,164,112,0.4)] hover:shadow-[0_0_30px_rgba(59,164,112,0.6)] hover:-translate-y-1">
+                    開始探索 <i class="fa-solid fa-arrow-down"></i>
+                </a>
+            </div>
+        </header>
+
+        <main id="explore" class="flex-grow container mx-auto px-4 py-16 max-w-6xl -mt-20 relative z-20">
+            
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+                
+                <div class="flex flex-wrap border-b border-gray-100 bg-gray-50/50 sm:flex-nowrap overflow-x-auto hide-scrollbar">
+                    <button 
+                        v-for="tab in tabs" 
+                        :key="tab.id"
+                        @click="activeTab = tab.id"
+                        class="flex-1 min-w-[120px] py-5 px-4 text-center font-medium text-sm md:text-base transition-all duration-300 relative whitespace-nowrap outline-none"
+                        :class="activeTab === tab.id ? 'text-brand-600 bg-white' : 'text-gray-500 hover:text-brand-500 hover:bg-gray-50'"
+                    >
+                        <i :class="tab.icon" class="mr-2"></i> {{ tab.name }}
+                        <!-- 活躍狀態底線動畫 -->
+                        <div 
+                            class="absolute bottom-0 left-0 w-full h-1 bg-brand-500 transform origin-left transition-transform duration-300"
+                            :class="activeTab === tab.id ? 'scale-x-100' : 'scale-x-0'"
+                        ></div>
+                    </button>
+                </div>
+
+                <div class="p-8 md:p-12 min-h-[400px]">
+                    <transition name="fade" mode="out-in">
+                        
+                        <!-- 園區簡介 -->
+                        <div v-if="activeTab === 'intro'" key="intro" class="grid md:grid-cols-2 gap-10 items-center">
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                                    <div class="w-2 h-8 bg-brand-500 rounded-full"></div>
+                                    校園中的綠色翡翠
+                                </h2>
+                                <p class="text-gray-600 leading-relaxed mb-4 text-lg">
+                                    國立成功大學榕園，位於臺南市成大光復校區內，是成大最著名的地標與精神象徵。廣闊平坦的綠地草皮上，矗立著數棵枝葉茂密、樹冠龐大的老榕樹，宛如一把把撐開的巨大綠色陽傘。
+                                </p>
+                                <p class="text-gray-600 leading-relaxed text-lg">
+                                    這裡不僅是成大師生課後休憩、社團演練的中心，濃厚的學院風情與異國氛圍，更使其成為臺南市民與遊客野餐、散步、享受午後陽光的絕佳去處。
+                                </p>
+                            </div>
+                            <div class="relative rounded-2xl overflow-hidden shadow-lg group">
+                                <img src="https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="大自然綠意" class="w-full h-[300px] object-cover transition-transform duration-700 group-hover:scale-105">
+                                <div class="absolute inset-0 bg-brand-900/10 group-hover:bg-transparent transition-colors duration-500"></div>
+                            </div>
+                        </div>
+
+                        <!-- 歷史沿革 -->
+                        <div v-else-if="activeTab === 'history'" key="history">
+                            <h2 class="text-3xl font-bold text-gray-800 mb-8 flex items-center gap-3">
+                                <div class="w-2 h-8 bg-brand-500 rounded-full"></div>
+                                百年時光走廊
+                            </h2>
+                            <div class="relative border-l-4 border-brand-200 ml-4 md:ml-6 space-y-10 py-2">
+                                <!-- 時間軸 1 -->
+                                <div class="relative pl-8 md:pl-10">
+                                    <div class="absolute -left-[14px] top-1 w-6 h-6 bg-white border-4 border-brand-500 rounded-full shadow"></div>
+                                    <h3 class="text-xl font-bold text-brand-700 mb-2">1902年 - 日治時期</h3>
+                                    <p class="text-gray-600 leading-relaxed">
+                                        此區域最初作為原日軍步兵第二聯隊營舍之設施，於第一、二期永久兵營計畫下展開興建。該營區成為當時大日本帝國國土最南方的陸軍基地。榕園現址當時即為軍隊的演練場。
+                                    </p>
+                                </div>
+                                <!-- 時間軸 2 -->
+                                <div class="relative pl-8 md:pl-10">
+                                    <div class="absolute -left-[14px] top-1 w-6 h-6 bg-white border-4 border-brand-500 rounded-full shadow"></div>
+                                    <h3 class="text-xl font-bold text-brand-700 mb-2">1923年 - 裕仁皇太子手植</h3>
+                                    <p class="text-gray-600 leading-relaxed">
+                                        4月21日，日本裕仁皇太子（即後來的昭和天皇）來台巡視，蒞臨視察時，親手於演練場栽種了榕樹作為紀念。這棵樹也就是現今榕園中最知名、最茂盛的百年老榕。
+                                    </p>
+                                </div>
+                                <!-- 時間軸 3 -->
+                                <div class="relative pl-8 md:pl-10">
+                                    <div class="absolute -left-[14px] top-1 w-6 h-6 bg-white border-4 border-brand-500 rounded-full shadow"></div>
+                                    <h3 class="text-xl font-bold text-brand-700 mb-2">1966年 - 移交成功大學</h3>
+                                    <p class="text-gray-600 leading-relaxed">
+                                        戰後原為國軍的光復營區，於民國55年（1966年）移交給成功大學，成為今日的光復校區。物換星移，昔日嚴肅的軍事營區轉變為充滿學術氣息的大學校園。
+                                    </p>
+                                </div>
+                                <!-- 時間軸 4 -->
+                                <div class="relative pl-8 md:pl-10">
+                                    <div class="absolute -left-[14px] top-1 w-6 h-6 bg-white border-4 border-brand-500 rounded-full shadow"></div>
+                                    <h3 class="text-xl font-bold text-brand-700 mb-2">2023年 - 屆滿百年</h3>
+                                    <p class="text-gray-600 leading-relaxed">
+                                        最早種下的國泰大榕迄今已屆滿百年。成大亦積極建立樹木身分資料庫，進行預防與養護措施，確保這些珍貴的自然資產能繼續陪伴未來的學子。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 特色亮點 -->
+                        <div v-else-if="activeTab === 'features'" key="features">
+                            <h2 class="text-3xl font-bold text-gray-800 mb-8 flex items-center gap-3">
+                                <div class="w-2 h-8 bg-brand-500 rounded-full"></div>
+                                榕園三大亮點
+                            </h2>
+                            <div class="grid md:grid-cols-3 gap-6">
+                                <!-- 卡片 1 -->
+                                <div class="bg-brand-50 rounded-2xl p-6 border border-brand-100 hover:shadow-lg transition-shadow">
+                                    <div class="w-12 h-12 bg-brand-500 text-white rounded-xl flex items-center justify-center text-2xl mb-4 shadow-md">
+                                        <i class="fa-solid fa-tree"></i>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-brand-800 mb-3">國泰大榕</h3>
+                                    <p class="text-gray-600 leading-relaxed text-sm">
+                                        園區內共有12棵大榕樹，其中最繁茂的一棵於1995年被霖園集團（國泰人壽）相中作為企業商標，喊出「向下紮根，向上成長」的哲學，這棵歷史之樹也因此有了「國泰大榕」的美名。
+                                    </p>
+                                </div>
+                                <!-- 卡片 2 -->
+                                <div class="bg-brand-50 rounded-2xl p-6 border border-brand-100 hover:shadow-lg transition-shadow">
+                                    <div class="w-12 h-12 bg-brand-500 text-white rounded-xl flex items-center justify-center text-2xl mb-4 shadow-md">
+                                        <i class="fa-solid fa-graduation-cap"></i>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-brand-800 mb-3">青春印記</h3>
+                                    <p class="text-gray-600 leading-relaxed text-sm">
+                                        老榕樹有如慈祥的長者，迎接新生也目送畢業生。每到鳳凰花開的畢業季，榕園總是充滿穿著學士服的學生在此合影留念，將青春的美好與大樹一同定格。
+                                    </p>
+                                </div>
+                                <!-- 卡片 3 -->
+                                <div class="bg-brand-50 rounded-2xl p-6 border border-brand-100 hover:shadow-lg transition-shadow">
+                                    <div class="w-12 h-12 bg-brand-500 text-white rounded-xl flex items-center justify-center text-2xl mb-4 shadow-md">
+                                        <i class="fa-solid fa-building-columns"></i>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-brand-800 mb-3">日式古蹟</h3>
+                                    <p class="text-gray-600 leading-relaxed text-sm">
+                                        榕園旁緊鄰著工業設計系館（大成館），該建築為原日軍步兵第二聯隊營舍，經典的羅馬式樣與紅磚建築，與綠意盎然的榕樹相互輝映，散發出獨特迷人的文化底蘊。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 旅遊資訊 -->
+                        <div v-else-if="activeTab === 'info'" key="info" class="grid md:grid-cols-2 gap-10 items-start">
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                                    <div class="w-2 h-8 bg-brand-500 rounded-full"></div>
+                                    參觀資訊
+                                </h2>
+                                <ul class="space-y-6">
+                                    <li class="flex items-start">
+                                        <div class="mt-1 w-10 h-10 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center shrink-0">
+                                            <i class="fa-solid fa-map-location-dot"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h4 class="font-bold text-gray-800 text-lg">地址</h4>
+                                            <p class="text-gray-600">臺南市東區大學路1號（成功大學光復校區內）</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <div class="mt-1 w-10 h-10 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center shrink-0">
+                                            <i class="fa-regular fa-clock"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h4 class="font-bold text-gray-800 text-lg">開放時間</h4>
+                                            <p class="text-gray-600">全天候 24 小時開放</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <div class="mt-1 w-10 h-10 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center shrink-0">
+                                            <i class="fa-solid fa-ticket"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h4 class="font-bold text-gray-800 text-lg">門票費用</h4>
+                                            <p class="text-gray-600">開放式校園，免門票參觀</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <div class="mt-1 w-10 h-10 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center shrink-0">
+                                            <i class="fa-solid fa-train-tram"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h4 class="font-bold text-gray-800 text-lg">交通方式</h4>
+                                            <p class="text-gray-600">搭乘臺鐵至「臺南火車站」，自後站出口步行直走大學路，約 5-10 分鐘即可抵達光復校區大門，進入後即可看見榕園。</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- 互動式地圖圖示/佔位圖 -->
+                            <div class="bg-gray-100 rounded-2xl h-[400px] flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-300 relative overflow-hidden">
+                                <!-- 由於 iframe Google Maps 需要 API 金鑰或特定 embed URL，此處以精美引導圖代替 -->
+                                <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="地圖意象" class="absolute inset-0 w-full h-full object-cover opacity-40">
+                                <div class="relative z-10 text-center bg-white/90 p-6 rounded-xl shadow-sm backdrop-blur-sm mx-4">
+                                    <i class="fa-solid fa-location-dot text-4xl text-brand-500 mb-3"></i>
+                                    <h4 class="font-bold text-gray-800 text-xl mb-1">成功大學 光復校區</h4>
+                                    <p class="text-sm text-gray-600 mb-4">建議開啟 Google Maps 導航至「成大榕園」</p>
+                                    <a href="https://maps.google.com/?cid=17725947226396847019" target="_blank" class="inline-block bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors">
+                                        開啟 Google 地圖
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </transition>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-gray-900 text-gray-400 py-8 text-center mt-auto">
+            <div class="container mx-auto px-4">
+                <p class="mb-2">&copy; 2026 國立成功大學榕園 介紹網站. All rights reserved.</p>
+                <p class="text-sm text-gray-500">
+                    此網頁僅為展示與資訊分享用途 · <i class="fa-solid fa-leaf text-brand-500"></i> 愛護自然，請勿攀爬樹木或亂丟垃圾。
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const { createApp, ref } = Vue;
+
+        createApp({
+            setup() {
+                // 定義活躍的頁籤狀態
+                const activeTab = ref('intro');
+
+                // 頁籤資料
+                const tabs = [
+                    { id: 'intro', name: '園區簡介', icon: 'fa-solid fa-leaf' },
+                    { id: 'history', name: '歷史沿革', icon: 'fa-solid fa-clock-rotate-left' },
+                    { id: 'features', name: '特色亮點', icon: 'fa-solid fa-star' },
+                    { id: 'info', name: '旅遊資訊', icon: 'fa-solid fa-circle-info' }
+                ];
+
+                return {
+                    activeTab,
+                    tabs
+                };
+            }
+        }).mount('#app');
+
+        // PWA: 註冊 Service Worker，啟用離線瀏覽與快取加速
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker
+                    .register('sw.js')
+                    .then((reg) => {
+                        console.log('[PWA] Service Worker 註冊成功：', reg.scope);
+                    })
+                    .catch((err) => {
+                        console.warn('[PWA] Service Worker 註冊失敗：', err);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
